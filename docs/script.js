@@ -1,27 +1,16 @@
 import { compile_function } from './app.js';
 
 const editor = document.getElementById('editor');
-const preview = document.getElementById('preview');
+const output = document.getElementById('output');
 const errorBox = document.getElementById('error');
 
 function renderRst(rst) {
   try {
     const result = compile_function(rst);
-
     errorBox.textContent = '';
-    preview.innerHTML = result.body || '';
-
-    const oldDynamic = document.getElementById('rst-dynamic-header');
-    if (oldDynamic) oldDynamic.remove();
-
-    if (result.header) {
-      const wrapper = document.createElement('div');
-      wrapper.id = 'rst-dynamic-header';
-      wrapper.innerHTML = result.header;
-      document.head.append(...wrapper.childNodes);
-    }
+    output.textContent = result.body || '';
   } catch (error) {
-    preview.innerHTML = '';
+    output.textContent = '';
     errorBox.textContent = 'Error: ' + error.message;
     console.error(error);
   }
@@ -40,8 +29,8 @@ async function main() {
 }
 
 main().catch((error) => {
-  preview.innerHTML = '';
-  errorBox.textContent = 'Error: ' + error.message;
   editor.value = '';
+  output.textContent = '';
+  errorBox.textContent = 'Error: ' + error.message;
   console.error(error);
 });
